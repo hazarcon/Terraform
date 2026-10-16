@@ -1,0 +1,29 @@
+name: Deploy Local IaC
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  terraform:
+    runs-on: self-hosted
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      # Install Terraform on your Ubuntu server if it's missing
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_wrapper: false
+
+      # Initialize Terraform (downloads the local provider)
+      - name: Terraform Init
+        run: terraform init
+
+      # Check if your code formatting is correct
+      - name: Terraform Format Check
+        run: terraform fmt -check
+
+      # Deploy the infrastructure without asking for human confirmation
+      - name: Terraform Apply
+        run: terraform apply -auto-approve
